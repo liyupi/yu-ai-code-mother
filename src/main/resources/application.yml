@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: yu-ai-code-mother-backend
+server:
+  port: 8123
+  servlet:
+    context-path: /api
+# springdoc-openapi
+springdoc:
+  group-configs:
+    - group: 'default'
+      paths-to-match: '/**'
+      packages-to-scan: com.yupi.yuaicodemother.controller
+# knife4j
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
