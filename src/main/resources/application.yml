@@ -7,6 +7,8 @@ spring:
     url: jdbc:mysql://localhost:3306/yu_ai_code_mother
     username: root
     password: 123456
+  profiles:
+    active: local
 server:
   port: 8123
   servlet:
@@ -22,3 +24,22 @@ knife4j:
   enable: true
   setting:
     language: zh_cn
+# AI
+langchain4j:
+  open-ai:
+    chat-model:
+      base-url: https://api.deepseek.com
+      api-key: <Your API Key>
+      model-name: deepseek-chat
+      strict-json-schema: true
+      response-format: json_object
+      max-tokens: 8192
+      log-requests: true
+      log-responses: true
+    streaming-chat-model:
+      base-url: https://api.deepseek.com
+      api-key: <Your API Key>
+      model-name: deepseek-chat
+      max-tokens: 8192
+      log-requests: true
+      log-responses: true
