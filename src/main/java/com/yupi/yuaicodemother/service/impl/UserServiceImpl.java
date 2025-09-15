@@ -7,7 +7,7 @@ import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
 import com.yupi.yuaicodemother.exception.BusinessException;
 import com.yupi.yuaicodemother.exception.ErrorCode;
-import com.yupi.yuaicodemother.model.dto.UserQueryRequest;
+import com.yupi.yuaicodemother.model.dto.user.UserQueryRequest;
 import com.yupi.yuaicodemother.model.entity.User;
 import com.yupi.yuaicodemother.mapper.UserMapper;
 import com.yupi.yuaicodemother.model.enums.UserRoleEnum;

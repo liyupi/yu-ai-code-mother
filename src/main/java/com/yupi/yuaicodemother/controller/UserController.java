@@ -10,7 +10,7 @@ import com.yupi.yuaicodemother.constant.UserConstant;
 import com.yupi.yuaicodemother.exception.BusinessException;
 import com.yupi.yuaicodemother.exception.ErrorCode;
 import com.yupi.yuaicodemother.exception.ThrowUtils;
-import com.yupi.yuaicodemother.model.dto.*;
+import com.yupi.yuaicodemother.model.dto.user.*;
 import com.yupi.yuaicodemother.model.vo.LoginUserVO;
 import com.yupi.yuaicodemother.model.vo.UserVO;
 import jakarta.annotation.Resource;
