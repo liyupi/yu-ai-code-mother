@@ -14,10 +14,7 @@ import com.yupi.yuaicodemother.constant.UserConstant;
 import com.yupi.yuaicodemother.exception.BusinessException;
 import com.yupi.yuaicodemother.exception.ErrorCode;
 import com.yupi.yuaicodemother.exception.ThrowUtils;
-import com.yupi.yuaicodemother.model.dto.app.AppAddRequest;
-import com.yupi.yuaicodemother.model.dto.app.AppAdminUpdateRequest;
-import com.yupi.yuaicodemother.model.dto.app.AppQueryRequest;
-import com.yupi.yuaicodemother.model.dto.app.AppUpdateRequest;
+import com.yupi.yuaicodemother.model.dto.app.*;
 import com.yupi.yuaicodemother.model.entity.User;
 import com.yupi.yuaicodemother.model.enums.CodeGenTypeEnum;
 import com.yupi.yuaicodemother.model.vo.AppVO;
@@ -77,6 +74,29 @@ public class AppController {
                                 .data("")
                                 .build()
                 ));
+    }
+
+    /**
+     * 应用部署
+     *
+     * @param appDeployRequest 部署请求
+     * @param request          请求
+     * @return 部署 URL
+     */
+    @PostMapping("/deploy")
+    public BaseResponse<String> deployApp(@RequestBody AppDeployRequest appDeployRequest, HttpServletRequest request) {
+        // 检查部署请求是否为空
+        ThrowUtils.throwIf(appDeployRequest == null, ErrorCode.PARAMS_ERROR);
+        // 获取应用 ID
+        Long appId = appDeployRequest.getAppId();
+        // 检查应用 ID 是否为空
+        ThrowUtils.throwIf(appId == null || appId <= 0, ErrorCode.PARAMS_ERROR, "应用 ID 不能为空");
+        // 获取当前登录用户
+        User loginUser = userService.getLoginUser(request);
+        // 调用服务部署应用
+        String deployUrl = appService.deployApp(appId, loginUser);
+        // 返回部署 URL
+        return ResultUtils.success(deployUrl);
     }
 
     /**
