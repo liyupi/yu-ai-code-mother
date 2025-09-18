@@ -46,7 +46,7 @@ const loginUserStore = useLoginUserStore()
  */
 const handleSubmit = async (values: any) => {
   const res = await userLogin(values)
-  // 登录成功
+  // 登录成功，把登录态保存到全局状态中
   if (res.data.code === 0 && res.data.data) {
     await loginUserStore.fetchLoginUser()
     message.success('登录成功')
@@ -59,10 +59,13 @@ const handleSubmit = async (values: any) => {
   }
 }
 </script>
-<style>
+
+<style scoped>
 #userLoginPage {
-  max-width: 480px;
-  margin: 0 auto;
+  background: white;
+  max-width: 720px;
+  padding: 24px;
+  margin: 24px auto;
 }
 
 .title {

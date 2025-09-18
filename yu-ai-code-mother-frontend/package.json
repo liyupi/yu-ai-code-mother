@@ -16,6 +16,9 @@
   "dependencies": {
     "ant-design-vue": "^4.2.6",
     "axios": "^1.11.0",
+    "@types/markdown-it": "^14.1.2",
+    "highlight.js": "^11.11.1",
+    "markdown-it": "^14.1.0",
     "pinia": "^3.0.3",
     "vue": "^3.5.17",
     "vue-router": "^4.5.1"

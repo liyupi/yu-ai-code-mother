@@ -1,6 +1,6 @@
 import { useLoginUserStore } from '@/stores/loginUser'
 import { message } from 'ant-design-vue'
-import router from '@/router' // 是否为首次获取登录用户
+import router from '@/router'
 
 // 是否为首次获取登录用户
 let firstFetchLoginUser = true
