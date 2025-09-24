@@ -15,7 +15,7 @@ class AiCodeGeneratorServiceTest {
 
     @Test
     void generateHtmlCode() {
-        HtmlCodeResult result = aiCodeGeneratorService.generateHtmlCode(1, "做个程序员鱼皮的博客，不超过 20 行");
+        HtmlCodeResult result = aiCodeGeneratorService.generateHtmlCode("做个程序员鱼皮的博客，不超过 20 行");
         Assertions.assertNotNull(result);
     }
 
