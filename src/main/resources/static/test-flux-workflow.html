@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LangGraph4j 工作流 SSE 演示</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .input-section {
+            margin-bottom: 30px;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #555;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        .button-group {
+            margin: 20px 0;
+            text-align: center;
+        }
+        button {
+            padding: 12px 24px;
+            margin: 0 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background-color: #545b62;
+        }
+        .btn-success {
+            background-color: #28a745;
+            color: white;
+        }
+        .btn-success:hover {
+            background-color: #1e7e34;
+        }
+        .output-section {
+            margin-top: 30px;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        .status.connected {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status.disconnected {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .status.connecting {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        .events {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 20px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .event {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-left: 4px solid #007bff;
+            background-color: white;
+            border-radius: 3px;
+        }
+        .event-type {
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 5px;
+        }
+        .event-data {
+            font-family: 'Courier New', monospace;
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 3px;
+            white-space: pre-wrap;
+        }
+        .timestamp {
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>🚀 LangGraph4j 工作流 SSE 演示</h1>
+
+    <div class="input-section">
+        <label for="promptInput">输入提示词：</label>
+        <input type="text" id="promptInput" placeholder="例如：创建一个博客网站，包含文章列表和详情页面"
+               value="创建一个在线教育平台，包含课程展示和学习进度跟踪功能">
+    </div>
+
+    <div class="button-group">
+        <button class="btn-primary" onclick="startWorkflowFlux()">🔄 开始 Flux 工作流</button>
+        <button class="btn-secondary" onclick="clearEvents()">🗑️ 清空日志</button>
+    </div>
+
+    <div class="output-section">
+        <div id="status" class="status disconnected">状态: 未连接</div>
+        <div class="events" id="events">
+            <div class="event">
+                <div class="event-type">系统消息</div>
+                <div class="event-data">等待连接...</div>
+                <div class="timestamp">准备就绪</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let eventSource = null;
+
+    function updateStatus(message, className) {
+        const status = document.getElementById('status');
+        status.textContent = '状态: ' + message;
+        status.className = 'status ' + className;
+    }
+
+    function addEvent(type, data, timestamp) {
+        const events = document.getElementById('events');
+        const event = document.createElement('div');
+        event.className = 'event';
+
+        const eventType = document.createElement('div');
+        eventType.className = 'event-type';
+        eventType.textContent = type;
+
+        const eventData = document.createElement('div');
+        eventData.className = 'event-data';
+        eventData.textContent = typeof data === 'object' ? JSON.stringify(data, null, 2) : data;
+
+        const eventTime = document.createElement('div');
+        eventTime.className = 'timestamp';
+        eventTime.textContent = timestamp || new Date().toLocaleTimeString();
+
+        event.appendChild(eventType);
+        event.appendChild(eventData);
+        event.appendChild(eventTime);
+
+        events.appendChild(event);
+        events.scrollTop = events.scrollHeight;
+    }
+
+    function startWorkflowFlux() {
+        const prompt = document.getElementById('promptInput').value.trim();
+        if (!prompt) {
+            alert('请输入提示词');
+            return;
+        }
+
+        if (eventSource) {
+            eventSource.close();
+        }
+
+        updateStatus('工作流执行中...', 'connecting');
+        addEvent('系统消息', '开始执行工作流: ' + prompt, new Date().toLocaleTimeString());
+
+        const url = `http://localhost:8123/api/workflow/execute-flux?prompt=${encodeURIComponent(prompt)}`;
+        eventSource = new EventSource(url);
+
+        eventSource.onopen = function() {
+            updateStatus('工作流连接已建立', 'connected');
+            addEvent('连接事件', '工作流 Flux 连接成功建立', new Date().toLocaleTimeString());
+            console.log('EventSource 连接已建立');
+        };
+
+        // 通用消息监听器，捕获所有事件
+        eventSource.onmessage = function(event) {
+            console.log('收到通用消息:', event);
+            try {
+                const data = JSON.parse(event.data);
+                addEvent('📨 通用消息', data, new Date().toLocaleTimeString());
+            } catch (e) {
+                addEvent('📨 通用消息', event.data, new Date().toLocaleTimeString());
+            }
+        };
+
+        eventSource.addEventListener('workflow_start', function(event) {
+            console.log('收到 workflow_start 事件:', event.data);
+            const data = JSON.parse(event.data);
+            addEvent('🚀 工作流开始', data, new Date().toLocaleTimeString());
+        });
+
+        eventSource.addEventListener('step_completed', function(event) {
+            console.log('收到 step_completed 事件:', event.data);
+            const data = JSON.parse(event.data);
+            addEvent(`✅ 步骤 ${data.stepNumber} 完成: ${data.currentStep}`, data, new Date().toLocaleTimeString());
+        });
+
+        eventSource.addEventListener('workflow_completed', function(event) {
+            const data = JSON.parse(event.data);
+            addEvent('🎉 工作流完成', data, new Date().toLocaleTimeString());
+            setTimeout(() => {
+                eventSource.close();
+                updateStatus('工作流完成，连接已关闭', 'disconnected');
+            }, 1000);
+        });
+
+        eventSource.addEventListener('workflow_error', function(event) {
+            const data = JSON.parse(event.data);
+            addEvent('❌ 工作流错误', data, new Date().toLocaleTimeString());
+            setTimeout(() => {
+                eventSource.close();
+                updateStatus('工作流失败，连接已关闭', 'disconnected');
+            }, 1000);
+        });
+
+        eventSource.onerror = function(event) {
+            console.error('EventSource 错误:', event);
+            updateStatus('连接错误', 'disconnected');
+            addEvent('错误事件', '工作流连接发生错误', new Date().toLocaleTimeString());
+            eventSource.close();
+        };
+    }
+
+    function clearEvents() {
+        const events = document.getElementById('events');
+        events.innerHTML = '<div class="event"><div class="event-type">系统消息</div><div class="event-data">日志已清空</div><div class="timestamp">' + new Date().toLocaleTimeString() + '</div></div>';
+    }
+
+    // 页面卸载时关闭连接
+    window.addEventListener('beforeunload', function() {
+        if (eventSource) {
+            eventSource.close();
+        }
+    });
+</script>
+</body>
+</html>
