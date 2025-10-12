@@ -17,8 +17,9 @@ spring:
     redis:
       host: localhost
       port: 6379
+      database: 0
       password:
-      ttl: 3600
+      ttl: 3600 # 缓存过期时间（秒）
   profiles:
     active: local
 server:
