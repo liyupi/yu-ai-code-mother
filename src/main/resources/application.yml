@@ -53,6 +53,7 @@ langchain4j:
       max-tokens: 8192
       log-requests: true
       log-responses: true
+      max-retries: 3
     streaming-chat-model:
       base-url: https://api.deepseek.com
       api-key: <Your API Key>
