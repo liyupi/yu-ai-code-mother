@@ -1,0 +1,80 @@
+# 线上配置文件模板
+# @author <a href="https://github.com/liyupi">程序员鱼皮</a>
+# @from <a href="https://codefather.cn">编程导航</a>
+spring:
+  # mysql
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://<Your IP>:3306/yu_ai_code_mother
+    username: yu_ai_code_mother_user
+    password: 12345678
+  # redis
+  data:
+    redis:
+      host: <Your IP>
+      port: 6379
+      database: 0
+      password: 12345678
+      ttl: 3600
+# AI
+langchain4j:
+  open-ai:
+    chat-model:
+      base-url: https://api.deepseek.com
+      api-key: <your-api-key>
+      model-name: deepseek-chat
+      max-tokens: 8192
+      log-requests: false
+      log-responses: false
+    streaming-chat-model:
+      base-url: https://api.deepseek.com
+      api-key: <your-api-key>
+      model-name: deepseek-chat
+      max-tokens: 8192
+      log-requests: false
+      log-responses: false
+    # 推理 AI 模型配置（用于复杂的推理任务）
+    reasoning-streaming-chat-model:
+      base-url: https://api.deepseek.com
+      api-key: <your-api-key>
+      model-name: deepseek-chat
+      max-tokens: 8192
+      temperature: 0.1
+      log-requests: false
+      log-responses: false
+    # 智能路由 AI 模型配置
+    routing-chat-model:
+      base-url: https://dashscope.aliyuncs.com/compatible-mode/v1
+      api-key: <your-api-key>
+      model-name: qwen-turbo
+      max-tokens: 100
+      log-requests: false
+      log-responses: false
+# 添加 COS 对象存储配置（需要从腾讯云获取）
+cos:
+  client:
+    host: <your-custom-domain.com>
+    secretId: <your-secret-id>
+    secretKey: <your-secret-key>
+    region: <your-region>
+    bucket: <your-bucket-name>
+# 阿里云 DashScope 配置
+dashscope:
+  api-key: <your-api-key>
+  image-model: wan2.2-t2i-flash
+# Pexels 图片搜索配置
+pexels:
+  api-key: <your-api-key>
+# 生产环境关闭日志
+mybatis-flex:
+  configuration:
+    log-impl: ''
+# 接口文档配置
+knife4j:
+  basic:
+    enable: true
+    username: root
+    password: 123456
+# 部署路径
+code:
+  deploy-host: http://<Your IP>/dist

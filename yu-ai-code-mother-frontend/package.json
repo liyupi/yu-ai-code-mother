@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "pure-build": "vite build",
     "build": "run-p type-check \"build-only {@}\" --",
     "openapi2ts": "openapi2ts",
     "preview": "vite preview",
