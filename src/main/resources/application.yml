@@ -72,9 +72,10 @@ langchain4j:
       log-responses: true
     # 智能路由 AI 模型配置（用于简单的分类任务）
     routing-chat-model:
-      base-url: https://api.deepseek.com
+      base-url: https://dashscope.aliyuncs.com/compatible-mode/v1
       api-key: <Your API Key>
-      model-name: deepseek-chat
+      model-name: qwen-turbo
+      max-tokens: 100
       log-requests: true
       log-responses: true
 # 添加 COS 对象存储配置（需要从腾讯云获取）
