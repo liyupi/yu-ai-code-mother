@@ -93,3 +93,12 @@ pexels:
 dashscope:
   api-key: <Your API Key>
   image-model: wan2.2-t2i-flash
+# 监控
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      show-details: always
