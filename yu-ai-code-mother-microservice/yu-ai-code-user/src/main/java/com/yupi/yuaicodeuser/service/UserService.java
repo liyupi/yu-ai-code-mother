@@ -1,11 +1,11 @@
-package com.yupi.yuaicodemother.service;
+package com.yupi.yuaicodeuser.service;
 
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.service.IService;
-import com.yupi.yuaicodemother.model.dto.user.UserQueryRequest;
-import com.yupi.yuaicodemother.model.entity.User;
-import com.yupi.yuaicodemother.model.vo.LoginUserVO;
-import com.yupi.yuaicodemother.model.vo.UserVO;
+import com.yupi.yuaicodeuser.model.dto.user.UserQueryRequest;
+import com.yupi.yuaicodeuser.model.entity.User;
+import com.yupi.yuaicodeuser.model.vo.LoginUserVO;
+import com.yupi.yuaicodeuser.model.vo.UserVO;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.List;
