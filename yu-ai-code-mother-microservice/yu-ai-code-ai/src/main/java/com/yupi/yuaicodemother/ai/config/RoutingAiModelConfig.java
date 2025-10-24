@@ -1,4 +1,4 @@
-package com.yupi.yuaicodemother.config;
+package com.yupi.yuaicodemother.ai.config;
 
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.openai.OpenAiChatModel;

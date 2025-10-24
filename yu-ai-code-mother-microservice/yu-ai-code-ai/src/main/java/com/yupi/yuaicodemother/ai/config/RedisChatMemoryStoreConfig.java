@@ -1,4 +1,4 @@
-package com.yupi.yuaicodemother.config;
+package com.yupi.yuaicodemother.ai.config;
 
 import cn.hutool.core.util.StrUtil;
 import dev.langchain4j.community.store.memory.chat.redis.RedisChatMemoryStore;
