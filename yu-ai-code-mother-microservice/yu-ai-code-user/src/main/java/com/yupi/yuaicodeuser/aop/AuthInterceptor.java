@@ -1,10 +1,10 @@
 package com.yupi.yuaicodeuser.aop;
 
-import com.yupi.yuaicodeuser.annotation.AuthCheck;
-import com.yupi.yuaicodeuser.exception.BusinessException;
-import com.yupi.yuaicodeuser.exception.ErrorCode;
-import com.yupi.yuaicodeuser.model.entity.User;
-import com.yupi.yuaicodeuser.model.enums.UserRoleEnum;
+import com.yupi.yuaicodemother.annotation.AuthCheck;
+import com.yupi.yuaicodemother.exception.BusinessException;
+import com.yupi.yuaicodemother.exception.ErrorCode;
+import com.yupi.yuaicodemother.model.entity.User;
+import com.yupi.yuaicodemother.model.enums.UserRoleEnum;
 import com.yupi.yuaicodeuser.service.UserService;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
