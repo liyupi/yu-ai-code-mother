@@ -15,3 +15,15 @@ cos:
     secretKey: your-secret-key
     region: your-region
     bucket: your-bucket-name
+# Dubbo
+dubbo:
+  registry:
+    address: nacos://127.0.0.1:8848?username=nacos&password=nacos
+    register-mode: instance
+  protocol:
+    name: tri
+    port: 50052
+  consumer:
+    timeout: 120000
+  provider:
+    timeout: 120000

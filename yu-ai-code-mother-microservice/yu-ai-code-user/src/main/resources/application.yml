@@ -33,9 +33,21 @@ server:
 springdoc:
   group-configs:
     - group: 'default'
-      packages-to-scan: com.yupi.yuaicodemother.controller
+      packages-to-scan: com.yupi.yuaicodeuser.controller
 # knife4j
 knife4j:
   enable: true
   setting:
     language: zh_cn
+# Dubbo
+dubbo:
+  registry:
+    address: nacos://127.0.0.1:8848?username=nacos&password=nacos
+    register-mode: instance
+  protocol:
+    name: tri
+    port: 50051
+  consumer:
+    timeout: 60000
+  provider:
+    timeout: 60000

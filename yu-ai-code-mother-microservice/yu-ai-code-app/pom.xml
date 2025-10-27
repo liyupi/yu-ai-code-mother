@@ -18,6 +18,15 @@
     </properties>
 
     <dependencies>
+        <!-- Dubbo -->
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-nacos-spring-boot-starter</artifactId>
+        </dependency>
         <!-- Redisson for distributed rate limiting -->
         <dependency>
             <groupId>org.redisson</groupId>
