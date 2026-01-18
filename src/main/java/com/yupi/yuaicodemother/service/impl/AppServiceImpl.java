@@ -99,7 +99,7 @@ public class AppServiceImpl extends ServiceImpl<AppMapper, App> implements AppSe
         }
         // 5. 在调用 AI 前，先保存用户消息到数据库中
         chatHistoryService.addChatMessage(appId, message, ChatHistoryMessageTypeEnum.USER.getValue(), loginUser.getId());
-        // 6. 设置监控上下文（用户 ID 和应用 ID）
+        // 6. 设置监控上下文（用户 ID 和应用 ID）TODO：学习监控相关内容
         MonitorContextHolder.setContext(
                 MonitorContext.builder()
                         .userId(loginUser.getId().toString())
@@ -247,13 +247,14 @@ public class AppServiceImpl extends ServiceImpl<AppMapper, App> implements AppSe
         Map<Long, UserVO> userVOMap = userService.listByIds(userIds).stream()
                 .collect(Collectors.toMap(User::getId, userService::getUserVO));
         return appList.stream().map(app -> {
-            AppVO appVO = getAppVO(app);
-            UserVO userVO = userVOMap.get(app.getUserId());
+            AppVO appVO = getAppVO(app); // 填充app信息
+            UserVO userVO = userVOMap.get(app.getUserId()); // 填充user信息
             appVO.setUser(userVO);
             return appVO;
         }).collect(Collectors.toList());
     }
 
+    // 封装查询条件
     @Override
     public QueryWrapper getQueryWrapper(AppQueryRequest appQueryRequest) {
         if (appQueryRequest == null) {
