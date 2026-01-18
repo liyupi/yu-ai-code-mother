@@ -65,3 +65,22 @@ create table chat_history
     INDEX idx_createTime (createTime),             -- 提升基于时间的查询性能
     INDEX idx_appId_createTime (appId, createTime) -- 游标查询核心索引
 ) comment '对话历史' collate = utf8mb4_unicode_ci;
+
+-- 代码质量表
+create table code_quality
+(
+    id                   bigint auto_increment comment 'id' primary key,
+    appId                bigint                             not null comment '应用id',
+    completeness          int                                null comment '完成度评分（0-100）',
+    completenessComment  text                               null comment '完成度评价',
+    codeQuality          int                                null comment '代码质量评分（0-100）',
+    codeQualityComment  text                               null comment '代码质量评价',
+    overallScore         int                                null comment '整体评分（0-100）',
+    overallComment       text                               null comment '整体评价',
+    createTime           datetime default CURRENT_TIMESTAMP not null comment '创建时间',
+    updateTime           datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    isDelete            tinyint  default 0                 not null comment '是否删除',
+    INDEX idx_appId (appId),                  -- 提升基于应用的查询性能
+    INDEX idx_createTime (createTime),        -- 提升基于时间的查询性能
+    INDEX idx_appId_createTime (appId, createTime) -- 游标查询核心索引
+) comment '代码质量分析' collate = utf8mb4_unicode_ci;
