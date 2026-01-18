@@ -6,6 +6,7 @@ import dev.langchain4j.model.chat.listener.ChatModelRequestContext;
 import dev.langchain4j.model.chat.listener.ChatModelResponseContext;
 import dev.langchain4j.model.output.TokenUsage;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
@@ -15,6 +16,7 @@ import java.util.Map;
 /**
  * AI 模型监听器
  */
+@Slf4j
 @Component
 public class AiModelMonitorListener implements ChatModelListener {
 
@@ -32,13 +34,21 @@ public class AiModelMonitorListener implements ChatModelListener {
         requestContext.attributes().put(REQUEST_START_TIME_KEY, Instant.now());
         // 从监控上下文中获取信息
         MonitorContext monitorContext = MonitorContextHolder.getContext();
-        String userId = monitorContext.getUserId();
-        String appId = monitorContext.getAppId();
-        requestContext.attributes().put(MONITOR_CONTEXT_KEY, monitorContext);
-        // 获取模型名称
-        String modelName = requestContext.chatRequest().modelName();
-        // 记录请求指标
-        aiModelMetricsCollector.recordRequest(userId, appId, modelName, "started");
+        
+        // 检查监控上下文是否存在
+        if (monitorContext != null) {
+            String userId = monitorContext.getUserId();
+            String appId = monitorContext.getAppId();
+            requestContext.attributes().put(MONITOR_CONTEXT_KEY, monitorContext);
+            // 获取模型名称
+            String modelName = requestContext.chatRequest().modelName();
+            // 记录请求指标
+            aiModelMetricsCollector.recordRequest(userId, appId, modelName, "started");
+        } else {
+            // 如果监控上下文为空，仍然设置一个空的占位符以避免后续错误
+            requestContext.attributes().put(MONITOR_CONTEXT_KEY, null);
+            log.warn("监控上下文为空，无法记录请求指标");
+        }
     }
 
     @Override
@@ -47,22 +57,36 @@ public class AiModelMonitorListener implements ChatModelListener {
         Map<Object, Object> attributes = responseContext.attributes();
         // 从监控上下文中获取信息
         MonitorContext context = (MonitorContext) attributes.get(MONITOR_CONTEXT_KEY);
-        String userId = context.getUserId();
-        String appId = context.getAppId();
-        // 获取模型名称
-        String modelName = responseContext.chatResponse().modelName();
-        // 记录成功请求
-        aiModelMetricsCollector.recordRequest(userId, appId, modelName, "success");
-        // 记录响应时间
-        recordResponseTime(attributes, userId, appId, modelName);
-        // 记录 Token 使用情况
-        recordTokenUsage(responseContext, userId, appId, modelName);
+        
+        // 检查监控上下文是否存在
+        if (context != null) {
+            String userId = context.getUserId();
+            String appId = context.getAppId();
+            // 获取模型名称
+            String modelName = responseContext.chatResponse().modelName();
+            // 记录成功请求
+            aiModelMetricsCollector.recordRequest(userId, appId, modelName, "success");
+            // 记录响应时间
+            recordResponseTime(attributes, userId, appId, modelName);
+            // 记录 Token 使用情况
+            recordTokenUsage(responseContext, userId, appId, modelName);
+        } else {
+            log.warn("监控上下文为空，无法记录响应指标");
+        }
     }
 
     @Override
     public void onError(ChatModelErrorContext errorContext) {
         // 从监控上下文中获取信息
         MonitorContext context = MonitorContextHolder.getContext();
+
+        // --- 空值检查 ---
+        if (context == null) {
+            // 如果获取不到上下文（比如在异步线程中丢失），直接返回或打印简单日志，防止NPE
+            System.err.println("监控上下文丢失，无法记录详细指标: " + errorContext.error().getMessage());
+            return;
+        }
+
         String userId = context.getUserId();
         String appId = context.getAppId();
         // 获取模型名称和错误类型
