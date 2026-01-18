@@ -41,4 +41,8 @@ public class StreamHandlerExecutor {
                     new SimpleTextStreamHandler().handle(originFlux, chatHistoryService, appId, loginUser);
         };
     }
+
+    public Flux<String> doExecute(Flux<String> originFlux, Long appId) {
+        return new SimpleTextStreamHandler().handle(originFlux, appId);
+    }
 }

@@ -45,4 +45,20 @@ public class SimpleTextStreamHandler {
                     chatHistoryService.addChatMessage(appId, errorMessage, ChatHistoryMessageTypeEnum.AI.getValue(), loginUser.getId());
                 });
     }
+
+    public Flux<String> handle(Flux<String> origin, Long appId) {
+        StringBuilder aiResponseBuilder = new StringBuilder();
+        return origin
+            .map(chunk -> {
+                aiResponseBuilder.append(chunk);
+                return chunk;
+            })
+            .doOnComplete(() -> {
+                log.info("代码质量分析的ai响应收集完毕，appId:{}", appId);
+            })
+            .doOnError(error -> {
+                String errorMessage = "代码质量分析的AI回复失败: ";
+                log.error(errorMessage, error);
+            });
+    }
 }
