@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Scope;
  * 智能路由模型配置
  */
 @Configuration
-@ConfigurationProperties(prefix = "langchain4j.open-ai.routing-chat-model")
+@ConfigurationProperties(prefix = "langchain4j.open-ai.routing-chat-model") // 将外部配置文件的属性自动绑定到Java对象的字段上
 @Data
 public class RoutingAiModelConfig {
 
@@ -26,9 +26,9 @@ public class RoutingAiModelConfig {
 
     private Double temperature;
 
-    private Boolean logRequests = false;
+    private Boolean logRequests = false; // 是否记录请求日志
 
-    private Boolean logResponses = false;
+    private Boolean logResponses = false; // 是否记录响应日志
 
     /**
      * 创建用于路由判断的ChatModel
