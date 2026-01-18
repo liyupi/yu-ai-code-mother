@@ -45,14 +45,14 @@ public class CodeGenWorkflow {
                     .addNode("project_builder", ProjectBuilderNode.create())
 
                     // 添加边
-                    .addEdge(START, "image_collector")
-                    .addEdge("image_collector", "prompt_enhancer")
-                    .addEdge("prompt_enhancer", "router")
-                    .addEdge("router", "code_generator")
-                    .addEdge("code_generator", "code_quality_check")
+                    .addEdge(START, "image_collector") // 收集图片
+                    .addEdge("image_collector", "prompt_enhancer") // 提示词增强
+                    .addEdge("prompt_enhancer", "router") // 智能路由
+                    .addEdge("router", "code_generator") // 生成代码
+                    .addEdge("code_generator", "code_quality_check") // 代码质量检查
                     // 新增质检条件边：根据质检结果决定下一步
                     .addConditionalEdges("code_quality_check",
-                            edge_async(this::routeAfterQualityCheck),
+                            edge_async(this::routeAfterQualityCheck), // 检测质量
                             Map.of(
                                     "build", "project_builder",   // 质检通过且需要构建
                                     "skip_build", END,            // 质检通过但跳过构建

@@ -23,6 +23,7 @@ public class CodeGeneratorNode {
 
     public static AsyncNodeAction<MessagesState<String>> create() {
         return node_async(state -> {
+            // 获取工作流上下文
             WorkflowContext context = WorkflowContext.getContext(state);
             log.info("执行节点: 代码生成");
             // 构造用户消息（包含原始提示词和可能的错误修复信息）

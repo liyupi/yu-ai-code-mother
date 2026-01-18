@@ -1,5 +1,7 @@
 package com.yupi.yuaicodemother.langgraph4j.model;
 
+import com.yupi.yuaicodemother.model.vo.CodeIssueVO;
+import com.yupi.yuaicodemother.model.vo.CodeQualityVO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -35,4 +37,10 @@ public class QualityResult implements Serializable {
      * 改进建议
      */
     private List<String> suggestions;
+
+    // 扩展信息
+    private Double qualityScore; // 代码质量评分 0-100
+    private List<CodeIssueVO> issues;
+    private CodeQualityVO codeQuality;
+
 }
