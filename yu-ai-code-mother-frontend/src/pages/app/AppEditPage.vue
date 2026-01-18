@@ -80,7 +80,17 @@
                 保存修改
               </a-button>
               <a-button @click="resetForm">重置</a-button>
-              <a-button type="link" @click="goToChat">进入对话</a-button>
+              <a-button @click="goToChat">进入对话</a-button>
+              <a-button 
+                type="default" 
+                @click="analyzeCodeQuality"
+                :loading="analyzingCodeQuality"
+                :disabled="!appInfo?.id || !appInfo?.codeGenType">
+                <template #icon>
+                  <FileSearchOutlined />
+                </template>
+                代码质量检测
+              </a-button>
             </a-space>
           </a-form-item>
         </a-form>
@@ -127,6 +137,7 @@ import { formatTime } from '@/utils/time'
 import UserInfo from '@/components/UserInfo.vue'
 import { getStaticPreviewUrl } from '@/config/env'
 import type { FormInstance } from 'ant-design-vue'
+import { codeQualityAnalysisController } from '@/api/codeQualityAnalysisController'
 
 const route = useRoute()
 const router = useRouter()
@@ -136,6 +147,7 @@ const loginUserStore = useLoginUserStore()
 const appInfo = ref<API.AppVO>()
 const loading = ref(false)
 const submitting = ref(false)
+const analyzingCodeQuality = ref(false)
 const formRef = ref<FormInstance>()
 
 // 表单数据
@@ -253,11 +265,68 @@ const resetForm = () => {
   formRef.value?.clearValidate()
 }
 
-// 进入对话页面
-const goToChat = () => {
-  if (appInfo.value?.id) {
-    router.push(`/app/chat/${appInfo.value.id}`)
+// 代码质量分析
+const analyzeCodeQuality = async () => {
+  if (!appInfo.value?.id || !appInfo.value?.codeGenType) {
+    message.warning('请先保存应用信息后再进行代码质量分析')
+    return
   }
+
+  analyzingCodeQuality.value = true
+  try {
+    const response = await codeQualityAnalysisController.analyzeExistingAppCode({
+      appId: appInfo.value.id
+    })
+
+    if (response.code === 0) {
+      message.success('代码质量分析完成')
+      console.log('代码质量分析结果:', response.data)
+      
+      // 这里可以添加弹窗显示分析结果
+      showCodeQualityResult(response.data)
+    } else {
+      message.error(response.message || '代码质量分析失败')
+    }
+  } catch (error) {
+    console.error('代码质量分析失败:', error)
+    message.error('代码质量分析失败')
+  } finally {
+    analyzingCodeQuality.value = false
+  }
+}
+
+// 显示代码质量分析结果
+const showCodeQualityResult = (result: API.CodeQualityVO) => {
+  // 这里可以创建一个模态框显示详细的分析结果
+  Modal.info({
+    title: '代码质量分析结果',
+    width: 800,
+    content: () => h('div', { style: { padding: '20px' } }, [
+      h('h3', '整体评分'),
+      h('a-progress', {
+        percent: result.overallScore,
+        status: result.overallScore >= 80 ? 'success' : result.overallScore >= 60 ? 'normal' : 'exception',
+        format: (percent: number) => `${percent}%`
+      }),
+      h('p', `整体评价：${result.overallComment}`),
+      
+      h('h3', { style: { marginTop: '20px' } }, '完成度'),
+      h('a-progress', {
+        percent: result.completeness,
+        status: result.completeness >= 80 ? 'success' : result.completeness >= 60 ? 'normal' : 'exception',
+        format: (percent: number) => `${percent}%`
+      }),
+      h('p', `完成度评价：${result.completenessComment}`),
+      
+      h('h3', { style: { marginTop: '20px' } }, '代码质量'),
+      h('a-progress', {
+        percent: result.codeQuality,
+        status: result.codeQuality >= 80 ? 'success' : result.codeQuality >= 60 ? 'normal' : 'exception',
+        format: (percent: number) => `${percent}%`
+      }),
+      h('p', `代码质量评价：${result.codeQualityComment}`)
+    ])
+  })
 }
 
 // 打开预览
