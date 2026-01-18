@@ -29,6 +29,8 @@ public class ToolManager {
 
     /**
      * 初始化工具映射
+     *
+     * 把spring自动装配好的所有tool装配到toolMap中，形成映射
      */
     @PostConstruct
     public void initTools() {

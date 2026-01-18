@@ -55,7 +55,7 @@ public class AiCodeGeneratorServiceFactory {
             .expireAfterAccess(Duration.ofMinutes(10))
             .removalListener((key, value, cause) -> {
                 log.debug("AI 服务实例被移除，缓存键: {}, 原因: {}", key, cause);
-            })
+            }) // 监听缓存项被移除的回调
             .build();
 
     /**

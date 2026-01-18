@@ -15,5 +15,5 @@ public class StreamMessage {
     /**
      * 消息类型
      */
-    private String type;
+    private String type; // 注意，这里是String类型，所以赋值需要使用 getValue() 方法
 }
