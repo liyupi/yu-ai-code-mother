@@ -7,6 +7,10 @@ tmp
 access_report.csv
 access_report.md
 
+### Python cache ###
+__pycache__/
+*.py[cod]
+
 HELP.md
 target/
 .mvn/wrapper/maven-wrapper.jar
