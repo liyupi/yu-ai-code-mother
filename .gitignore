@@ -3,6 +3,10 @@ application-local.yml
 application-prod.yml
 tmp
 
+### Audit report output (may contain sensitive data) ###
+access_report.csv
+access_report.md
+
 HELP.md
 target/
 .mvn/wrapper/maven-wrapper.jar
