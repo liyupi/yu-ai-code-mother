@@ -1,12 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomePage from '@/pages/HomePage.vue'
-import UserLoginPage from '@/pages/user/UserLoginPage.vue'
-import UserRegisterPage from '@/pages/user/UserRegisterPage.vue'
-import UserManagePage from '@/pages/admin/UserManagePage.vue'
-import AppManagePage from '@/pages/admin/AppManagePage.vue'
-import AppChatPage from '@/pages/app/AppChatPage.vue'
-import AppEditPage from '@/pages/app/AppEditPage.vue'
-import ChatManagePage from "@/pages/admin/ChatManagePage.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -14,42 +6,42 @@ const router = createRouter({
     {
       path: '/',
       name: '主页',
-      component: HomePage,
+      component: () => import('@/pages/HomePage.vue'),
     },
     {
       path: '/user/login',
       name: '用户登录',
-      component: UserLoginPage,
+      component: () => import('@/pages/user/UserLoginPage.vue'),
     },
     {
       path: '/user/register',
       name: '用户注册',
-      component: UserRegisterPage,
+      component: () => import('@/pages/user/UserRegisterPage.vue'),
     },
     {
       path: '/admin/userManage',
       name: '用户管理',
-      component: UserManagePage,
+      component: () => import('@/pages/admin/UserManagePage.vue'),
     },
     {
       path: '/admin/appManage',
       name: '应用管理',
-      component: AppManagePage,
+      component: () => import('@/pages/admin/AppManagePage.vue'),
     },
     {
       path: '/admin/chatManage',
       name: '对话管理',
-      component: ChatManagePage,
+      component: () => import('@/pages/admin/ChatManagePage.vue'),
     },
     {
       path: '/app/chat/:id',
       name: '应用对话',
-      component: AppChatPage,
+      component: () => import('@/pages/app/AppChatPage.vue'),
     },
     {
       path: '/app/edit/:id',
       name: '编辑应用',
-      component: AppEditPage,
+      component: () => import('@/pages/app/AppEditPage.vue'),
     },
   ],
 })
