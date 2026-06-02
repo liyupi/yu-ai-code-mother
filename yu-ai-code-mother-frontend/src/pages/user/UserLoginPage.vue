@@ -25,12 +25,14 @@
     </a-form>
   </div>
 </template>
-<script lang="ts" setup>
+
+<script setup lang="ts">
 import { reactive } from 'vue'
-import { userLogin } from '@/api/userController.ts'
-import { useLoginUserStore } from '@/stores/loginUser.ts'
 import { useRouter } from 'vue-router'
 import { message } from 'ant-design-vue'
+import { userLogin } from '@/api/userController'
+import { useLoginUserStore } from '@/stores/loginUser'
+import { useLoginRedirect } from '@/composables/useLoginRedirect'
 
 const formState = reactive<API.UserLoginRequest>({
   userAccount: '',
@@ -39,21 +41,14 @@ const formState = reactive<API.UserLoginRequest>({
 
 const router = useRouter()
 const loginUserStore = useLoginUserStore()
+const { getRedirectPath } = useLoginRedirect()
 
-/**
- * 提交表单
- * @param values
- */
-const handleSubmit = async (values: any) => {
+const handleSubmit = async (values: API.UserLoginRequest) => {
   const res = await userLogin(values)
-  // 登录成功，把登录态保存到全局状态中
   if (res.data.code === 0 && res.data.data) {
     await loginUserStore.fetchLoginUser()
     message.success('登录成功')
-    router.push({
-      path: '/',
-      replace: true,
-    })
+    router.push({ path: getRedirectPath(), replace: true })
   } else {
     message.error('登录失败，' + res.data.message)
   }
