@@ -1,157 +1,111 @@
-# AI 零代码应用生成平台
+# AI 应用代码生成平台
 
-> 作者：[程序员鱼皮](https://yuyuanweb.feishu.cn/wiki/Abldw5WkjidySxkKxU2cQdAtnah)
->
-> 本项目为教学项目，提供完整视频教程 + 文字教程 + 简历写法 + 面试题解 + 答疑服务，帮你提升项目能力，给简历增加亮点！
->
-> ⭐️ 加入项目系列学习：[加入编程导航](https://www.codefather.cn/vip)
+一个面向 AI 应用开发场景的全栈项目：用户用自然语言描述需求，系统通过 AI 生成网站代码，并提供实时预览、对话式迭代、源码下载和应用部署能力。
 
+> 本仓库用于展示罗任的全栈学习、工程实践与持续维护过程。项目来源及个人工作边界见文末“来源与声明”。
 
-## 一、项目介绍
+## 核心能力
 
-> 视频介绍：https://www.bilibili.com/video/BV1XsbSznEs4
+- **AI 代码生成**：支持根据需求选择生成策略，以 SSE 流式返回生成过程。
+- **对话式迭代**：保存应用对话历史，支持继续描述需求并更新生成结果。
+- **在线预览与编辑**：前端展示生成页面，并提供应用信息编辑入口。
+- **部署与下载**：可生成部署标识、访问静态结果，并下载完整源码。
+- **管理能力**：包含用户、应用和对话历史管理，支持精选应用。
+- **可观测性**：单体后端集成 Actuator 和 Prometheus 指标出口，仓库包含 Prometheus/Grafana 相关资源。
 
-这是一套以 **AI 开发实战 + 后端架构设计** 为核心的项目教程，基于 Spring Boot 3 + LangChain4j + Vue 3 开发对标大厂的 **企业级 AI 代码生成平台**，带大家掌握新时代程序员必知必会的 AI 智能体开发、AI 工作流等前沿技术，大幅提升求职竞争力！
+## 系统架构
 
-![](https://pic.yupi.icu/1/1753332293578-0ccc2a53-6d98-41a7-b714-16fa6a7f095f.png)
+仓库同时保留两种后端形态：
 
+1. **单体版（默认）**：根目录 Spring Boot 应用，默认端口 `8123`，适合本地开发和功能验证。
+2. **微服务版**：`yu-ai-code-mother-microservice/` 下的 Maven 多模块工程，按用户、应用、AI 和截图等职责拆分，使用 Nacos 与 Dubbo 协作。
 
+详细说明见 [系统架构](docs/ARCHITECTURE.md)。
 
-### 4 大核心能力
+## 技术栈
 
-1）智能代码生成：用户输入需求描述，AI 自动分析并选择合适的生成策略，通过工具调用生成代码文件，采用流式输出让用户实时看到 AI 的执行过程。
+| 领域 | 主要技术 |
+| --- | --- |
+| 前端 | Vue 3、TypeScript、Vite、Ant Design Vue、Pinia、Vue Router |
+| 后端 | Java 21、Spring Boot 3.5、Spring MVC、Spring Session |
+| AI | LangChain4j、LangGraph4j、OpenAI 兼容模型接口、DashScope |
+| 数据 | MySQL、MyBatis-Flex、Redis、Redisson、Caffeine |
+| 微服务 | Spring Cloud Alibaba、Nacos、Dubbo |
+| 工程能力 | Selenium、腾讯云 COS、Knife4j、Actuator、Prometheus、Grafana |
 
-![](https://pic.yupi.icu/1/1753332332820-9ec614de-65a2-496d-b9b2-dc89c20d06c9.png)
+## 快速开始
 
+### 1. 环境准备
 
+- JDK 21
+- MySQL 8.x
+- Redis 6.x 或更高版本
+- Node.js 22 与 npm
+- 至少一个可用的 OpenAI 兼容模型 API
 
-2）可视化编辑：生成的应用将实时展示，可以进入编辑模式，自由选择网页元素并且和 AI 对话来快速修改页面，直到满意为止。
+如需运行微服务版，还需准备 Nacos，并根据需要启动对应服务模块。
 
-![](https://pic.yupi.icu/1/1753332451827-220a1df9-ea60-4646-bea0-64e5f73d15fe.png)
+### 2. 初始化数据库
 
+在 MySQL 中执行 `sql/create_table.sql`。该脚本会创建 `yu_ai_code_mother` 数据库及项目所需表。
 
+### 3. 配置本地环境
 
-3）一键部署分享：可以将生成的应用一键部署到云端并自动截取封面图，获得可访问的地址进行分享，同时支持完整项目源码下载。
+复制 `src/main/resources/application-prod-sample.yml` 中需要的配置项到被 `.gitignore` 排除的 `application-local.yml`，然后填写本地数据库、Redis、AI 服务及可选外部服务配置。
 
-![](https://pic.yupi.icu/1/1753332366033-187b00b1-8609-42b1-ba80-cf58bdb0e970.png)
+> 不要将 API Key、数据库密码、COS 密钥等真实凭据提交到仓库。
 
-查看精选案例：
+配置项清单见 [配置说明](docs/CONFIGURATION.md)。
 
-![](https://pic.yupi.icu/1/1753332637580-d9e92c36-789d-4ded-b03b-16a1ac61dd27.png)
+### 4. 启动单体后端
 
+```powershell
+.\mvnw.cmd spring-boot:run
+```
 
+默认 API 根路径为 `http://localhost:8123/api`。
 
-4）企业级管理：提供用户管理、应用管理、系统监控、业务指标监控等后台功能，管理员可以设置精选应用、监控 AI 调用情况和系统性能。
+### 5. 启动前端
 
-![](https://pic.yupi.icu/1/1753281175326-d7ecfcb9-f034-4893-8e13-be0c5dcdacf6.png)
+```powershell
+cd yu-ai-code-mother-frontend
+npm install
+npm run dev
+```
 
-![](https://pic.yupi.icu/1/1753333524767-c89b8d1b-bc57-4094-ace7-1b37876f3f0b.png)
+Vite 开发服务器会将 `/api` 请求代理到 `http://localhost:8123`。
 
+## 项目结构
 
+```text
+.
+├── src/                              # 单体版后端源码与测试
+├── sql/                              # MySQL 初始化脚本
+├── yu-ai-code-mother-frontend/       # Vue 3 前端
+├── yu-ai-code-mother-microservice/   # 微服务多模块工程
+├── grafana/                          # Grafana 配置资源
+├── docs/                             # 架构、配置、部署与贡献说明
+├── prometheus.yml                    # Prometheus 采集配置
+└── pom.xml                           # 单体版 Maven 工程
+```
 
-![](https://pic.yupi.icu/1/1753332482457-e6b13118-e150-45e5-bf36-6cf355cbec19.png)
+## 文档
 
+- [系统架构](docs/ARCHITECTURE.md)
+- [配置说明](docs/CONFIGURATION.md)
+- [部署指南](docs/DEPLOYMENT.md)
+- [个人工作与贡献边界](docs/PERSONAL_CONTRIBUTIONS.md)
+- [参与贡献](.github/CONTRIBUTING.md)
 
+## 开发者
 
-当你学会这个项目后，你不仅能开发 AI 代码生成器，更能灵活开发各种复杂的 AI 应用：AI 写作助手、AI 设计工具、AI 数据分析平台、AI PPT 制作大师，尽情发挥自己的想象力吧！
+- **维护者**：罗任
+- **GitHub**：[@lucky-Luor](https://github.com/lucky-Luor)
 
+## 许可说明
 
+当前仓库未包含可核验的开源许可证文件，因此不对代码的再分发或商业使用做额外授权声明。如需复用，请先核对原项目的授权条款。
 
-### 为什么做这个项目？
+## 来源与声明
 
-1）大厂都在做：如今各大厂都在疯狂布局 AI 编程赛道，无论是网页端的 AI 应用生成器，还是客户端 IDE 和 AI 编程插件，已经成为风口。
-
-2）找工作好用：随着 AI 发展，企业对 AI 开发者需求激增，掌握 AI 应用开发的程序员在求职时极具优势。
-
-3）技术值得学：此类项目的实现不仅需要 AI 智能体 / 工作流开发技术，还需要各种后端技术和架构设计能力。
-
-![](https://pic.yupi.icu/1/1753325705083-12fe403e-93ba-4289-87cd-61ec83b57d5e.png)
-
-
-
-## 二、项目优势
-
-本项目紧跟 AI 时代、选题新颖、**对标大厂** 产品业务、技术丰富。区别于增删改查的烂大街项目，鱼皮会带你实战大量新技术和企业应用场景，掌握层层递进的系统设计、项目扩展和优化方案，帮你成为 AI 时代企业的香饽饽，给你的简历和求职大幅增加竞争力！
-
-微服务 AI 全栈项目，技术丰富，玩透 AI 开发~
-
-![](https://pic.yupi.icu/1/1753272108623-c211ff4f-35ff-4f2c-bd5d-3a39a13d8f1c.png)
-
-业务场景真实，实践大量企业解决方案：
-
-![](https://pic.yupi.icu/1/1753290346736-47093142-ff4f-4b1d-8523-f6dea8de7e3c.png)
-
-鱼皮给大家讲的是 **通用的项目开发方法、企业级架构设计套路和最新的 AI 应用开发技术**，从这个项目中你可以学到：
-
-- 如何基于 LangChain4j 构建 AI 应用，实现真正的 AI 驱动业务？
-- 如何基于 LangGraph4j 实现 AI 工作流，实现复杂的 AI 智能体？
-- 如何设计 AI 工具调用机制，让 AI 智能生成复杂项目？
-- 如何实现 AI 流式输出 + 响应式编程，提升并发性能？
-- 如何使用 Spring Cloud Alibaba + Dubbo 实现微服务架构？
-- 如何设计复杂的 AI 对话记忆机制，实现多租户的 AI 服务架构？
-- 如何利用 AI Vibe Coding 和代码生成引擎，快速实现企业级系统？
-- 如何结合 Redis + Caffeine 构建高性能多级 AI 服务缓存？
-- 如何从性能、安全性、稳定性、成本等角度全方面优化项目？
-- 如何巧用多种设计模式，打造可扩展的企业级架构？
-- 如何构建企业级监控体系，实时掌握系统和 AI 服务的状态？
-- 如何实现动态网站浏览、网站截图和部署服务？
-
-此外，还能学会很多 AI 编程、系统架构设计、技术方案对比的方法，提升排查问题、自主解决 Bug 的能力。鱼皮还给大家提供了大量的项目扩展点，有能力的同学可以进一步拉开和别人的区分度，无限进步！
-
-
-
-### 鱼皮系列项目优势
-
-鱼皮的原创项目以 **实战** 为主，用 **全程直播** 的方式 **从 0 到 1** 带做，从需求分析、技术选型、项目设计、项目初始化、Demo 编写、前后端开发实现、项目优化、部署上线等，每个环节我都 **从理论到实践** 给大家讲的明明白白、每个细节都不放过！
-
-比起看网上的教程学习，鱼皮项目系列的优势：从学知识 => 实践项目 => 复习笔记 => 项目答疑 => 简历写法 => 面试题解的一条龙服务
-
-![](https://pic.yupi.icu/1/image-20250724150852970.png)
-
-编程导航已有 **近 20 套项目教程！** 每个项目的学习重点不同，几乎全都是前端 + 后端的 **全栈项目** 。
-
-详细请见：[https://codefather.cn/course](https://www.codefather.cn/course)（在该页面右侧有教程推荐和学习建议）
-
-往期项目介绍视频：[https://bilibili.com/video/BV1YvmbYbEgS](https://www.bilibili.com/video/BV1YvmbYbEgS/)
-
-![](https://pic.yupi.icu/1/1753338231169-664e7486-0f52-4153-a28b-0a8757012009.png)
-
-
-
-## 三、更多介绍
-
-功能模块：
-
-![](https://pic.yupi.icu/1/image%20(1).png)
-
-核心业务流程：
-
-![](https://pic.yupi.icu/1/image-20250724145913756.png)
-
-架构设计：
-
-![](https://pic.yupi.icu/1/AI%E5%BA%94%E7%94%A8%E7%94%9F%E6%88%90%E5%B9%B3%E5%8F%B0%E6%9E%B6%E6%9E%84%E5%9B%BE.png)
-
-
-## 第一期免费看
-
-第一期是公开讲解，给大家介绍项目背景、项目功能、技术选型、架构设计、教程计划等。
-
-视频地址：[https://www.bilibili.com/video/BV1Eq5DzcE9o](https://www.bilibili.com/video/BV1XsbSznEs4/)
-​	
-
-## 加入项目学习
-
-编程导航已有 **近 20 套项目教程**！每个项目的学习重点不同，几乎全都是前端 + 后端的 **全栈** 项目 。
-
-![](https://pic.yupi.icu/1/wechat_2025-07-24_115207_359.png)
-
-欢迎加入 [编程导航](https://mp.weixin.qq.com/s/I1oD6pAaWBvGLyFDT9AgvA?token=1925632390&lang=zh_CN)，加入后不仅可以全程跟学本项目，往期 [10+ 套原创项目教程](https://mp.weixin.qq.com/s/omIazLMQlTo9M3jFFH7NzQ?token=70787607&lang=zh_CN) 也都可以无限回看。还能享受更多原创技术资料、学习和求职指导、上百场面试回放视频，开启你的编程起飞之旅~
-
-🧧 助力新项目学习，给大家发放 **限时编程导航优惠券**，扫码即可领券加入。加入三天内不满意可全额退款，欢迎加入体验，名额有限，速来学习！
-
-<img width="404" alt="image" src="https://github.com/user-attachments/assets/56411098-b60e-4267-8ba2-4ebc5d416afc" />
-
-1 天不到 1 块钱，绝对是对自己最值的投资！成为编程导航会员后，可以解锁 10 多套项目的教程和资料，PC 网站和 APP 都可以学习，如图：
-
-![](https://pic.yupi.icu/1/image-20250120113756426-20250422160856746.png)
+本项目基于程序员鱼皮的 `yu-ai-code-mother` 教学项目进行学习、整理与个人化维护。原始功能设计与主要课程代码归原作者及相关权利人所有；本仓库的个人工作边界可通过 Git 历史与 [个人工作说明](docs/PERSONAL_CONTRIBUTIONS.md) 核对。
