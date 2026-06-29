@@ -5,8 +5,8 @@
 - [x] 新增架构、配置、部署和个人贡献说明
 - [x] 新增 GitHub Issue、PR 与贡献模板
 - [x] 执行 Markdown、链接、敏感信息和变更范围验收
-- [ ] 提交并推送文档变更
-- [ ] 更新 GitHub 仓库名称、简介、Topics 与本地 origin
+- [x] 提交并推送文档变更
+- [x] 更新 GitHub 仓库名称、简介、Topics 与本地 origin
 
 ## 边界
 
