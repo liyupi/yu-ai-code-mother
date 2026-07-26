@@ -65,6 +65,10 @@ dashscope:
 # Pexels 图片搜索配置
 pexels:
   api-key: <your-api-key>
+# You.com 联网搜索配置（获取 API 密钥: https://ydc-index.io/docs）
+youcom:
+  api-key: <your-api-key>
+  endpoint: https://ydc-index.io/v1/search
 # 生产环境关闭日志
 mybatis-flex:
   configuration:
