@@ -1,7 +1,6 @@
 <template>
   <a-modal v-model:open="visible" title="应用详情" :footer="null" width="500px">
     <div class="app-detail-content">
-      <!-- 应用基础信息 -->
       <div class="app-basic-info">
         <div class="info-item">
           <span class="info-label">创建者：</span>
@@ -20,25 +19,20 @@
         </div>
       </div>
 
-      <!-- 操作栏（仅本人或管理员可见） -->
       <div v-if="showActions" class="app-actions">
         <a-space>
           <a-button type="primary" @click="handleEdit">
-            <template #icon>
-              <EditOutlined />
-            </template>
+            <template #icon><EditOutlined /></template>
             修改
           </a-button>
           <a-popconfirm
             title="确定要删除这个应用吗？"
-            @confirm="handleDelete"
             ok-text="确定"
             cancel-text="取消"
+            @confirm="handleDelete"
           >
             <a-button danger>
-              <template #icon>
-                <DeleteOutlined />
-              </template>
+              <template #icon><DeleteOutlined /></template>
               删除
             </a-button>
           </a-popconfirm>
@@ -53,7 +47,7 @@ import { computed } from 'vue'
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons-vue'
 import UserInfo from './UserInfo.vue'
 import { formatTime } from '@/utils/time'
-import {formatCodeGenType} from "../utils/codeGenTypes.ts";
+import { formatCodeGenType } from '@/utils/codeGenTypes'
 
 interface Props {
   open: boolean
@@ -78,13 +72,8 @@ const visible = computed({
   set: (value) => emit('update:open', value),
 })
 
-const handleEdit = () => {
-  emit('edit')
-}
-
-const handleDelete = () => {
-  emit('delete')
-}
+const handleEdit = () => emit('edit')
+const handleDelete = () => emit('delete')
 </script>
 
 <style scoped>
